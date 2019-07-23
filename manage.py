@@ -12,7 +12,13 @@ def shorter():
     url = request.form.get('ori_url', None)
     tinyurl = ''
     if url:
-        urlencode = urllib.quote(url.split('://')[1])
+        urllist = url.split('://')
+        urlprotocal = urllist[0]
+        urlpath = urllist[1]
+
+        urlencode = urllib.quote(urlpath.encode('utf8'))
+        url = urlprotocal + "://" + urlencode
+
         result, tinyurl = Shorter().validate(urlencode)
         if not result:
             tinyurl = Shorter().encode(urlencode, url)
