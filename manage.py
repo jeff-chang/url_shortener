@@ -16,16 +16,20 @@ def shorter():
         result, tinyurl = Shorter().validate(urlencode)
         if not result:
             tinyurl = Shorter().encode(urlencode, url)
-        return jsonify({'code': 200, 'status': 200, 'message': tinyurl})
+        mesg = "http://%s/%s" % (WEB_SERVER_IP, tinyurl)
+        return jsonify({'code': 200, 'status': 0, 'message': mesg})
     else:
-        return jsonify({'code': 200, 'status': 403, 'message': 'incorrect url'})     
+        return jsonify({'code': 403, 'status': -1, 'message': 'incorrect url'})     
 
 
 @app.route("/<url_key>")
 def redirect2ori(url_key):
-    url = Shorter().decode(url_key)
-    return redirect(url)
+    try:
+        url = Shorter().decode(url_key)
+        return redirect(url)
+    except:
+        return jsonify({'code': 404, 'status': -1, 'message': 'unknown url'})
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', port=80)
